@@ -191,8 +191,8 @@ class MCTSPlayer(object):
         """一時的に変更中"""
         if True:
             acts, probs = self.mcts.get_move_probs(board, temp)
-            #move_probs[list(acts)] = probs
-            move_probs = probs            
+            move_probs[list(acts)] = probs
+            #move_probs = probs            
             if self._is_selfplay:
                 # add Dirichlet Noise for exploration (needed for
                 # self-play training)

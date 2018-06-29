@@ -24,7 +24,7 @@ class Board(object):
         self.players = [1, 2]  # player1 and player2
 
     def init_board(self, start_player=0):
-        self.board.init_board(start_player)
+        self.board.init_board(10,start_player)
         self.current_player = self.board.get_current_player()
         self.availables = self.board.availables
 
