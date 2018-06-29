@@ -39,7 +39,7 @@ class PolicyValueNet():
         
     def create_policy_value_net(self):
         """create the policy value network """   
-        in_x = network = Input((4, self.board_width, self.board_height))
+        in_x = network = Input((8, self.board_width, self.board_height))
 
         # conv layers
         network = Conv2D(filters=32, kernel_size=(3, 3), padding="same", data_format="channels_first", activation="relu", kernel_regularizer=l2(self.l2_const))(network)
@@ -48,12 +48,12 @@ class PolicyValueNet():
         # action policy layers
         policy_net = Conv2D(filters=4, kernel_size=(1, 1), data_format="channels_first", activation="relu", kernel_regularizer=l2(self.l2_const))(network)
         policy_net = Flatten()(policy_net)
-        self.policy_net = Dense(self.board_width*self.board_height, activation="softmax", kernel_regularizer=l2(self.l2_const))(policy_net)
+        self.policy_net = Dense(17*17, activation="softmax", kernel_regularizer=l2(self.l2_const))(policy_net)
         # state value layers
         value_net = Conv2D(filters=2, kernel_size=(1, 1), data_format="channels_first", activation="relu", kernel_regularizer=l2(self.l2_const))(network)
         value_net = Flatten()(value_net)
         value_net = Dense(64, kernel_regularizer=l2(self.l2_const))(value_net)
-        self.value_net = Dense(1, activation="tanh", kernel_regularizer=l2(self.l2_const))(value_net)
+        self.value_net = Dense(17*17, activation="tanh", kernel_regularizer=l2(self.l2_const))(value_net)
 
         self.model = Model(in_x, [self.policy_net, self.value_net])
         
@@ -70,7 +70,7 @@ class PolicyValueNet():
         """
         legal_positions = board.availables
         current_state = board.current_state()
-        act_probs, value = self.policy_value(current_state.reshape(-1, 4, self.board_width, self.board_height))
+        act_probs, value = self.policy_value(current_state.reshape(-1, 8, self.board_width, self.board_height))
         act_probs = zip(legal_positions, act_probs.flatten()[legal_positions])
         return act_probs, value[0][0]
 

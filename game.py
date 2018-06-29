@@ -18,13 +18,14 @@ class Board(object):
         # board states stored as a dict,
         # key: move as location on the board,
         # value: player as pieces type
-        self.states = {}
+        ### self.states = {}
         # need how many pieces in a row to win
-        self.n_in_row = int(kwargs.get('n_in_row', 5))
+        ### self.n_in_row = int(kwargs.get('n_in_row', 5))
         self.players = [1, 2]  # player1 and player2
 
     def init_board(self, start_player=0):
         self.board.init_board(start_player)
+        self.current_player = self.board.get_current_player()
         self.availables = self.board.availables
 
 
@@ -55,7 +56,7 @@ class Board(object):
         state shape: 5*width*height
         """
 
-        square_state = np.zeros((7, self.width, self.height))   # 7層に変更
+        square_state = np.zeros((8, self.width, self.height))   # {0}層に変更
         curr_state = self.board.get_current_state()
         curr_player = self.get_current_player()
         player_state = self.board.get_player_state()
@@ -67,12 +68,14 @@ class Board(object):
         square_state[3][player_state == agents[1]] = 1.0    # エージェントの座標2
         square_state[4][player_state == enemy_agents[0]] = 1.0    # 敵エージェントの座標1
         square_state[5][player_state == enemy_agents[1]] = 1.0    # 敵エージェントの座標2
-        square_state[6][:,:] = curr_player
+        square_state[6] = (self.board.get_board_state()+16)/np.max(self.board.get_board_state()+16)
+        square_state[7][:,:] = curr_player
         return square_state[:, ::-1, :]
 
     def do_move(self, move):
         self.board.do_move(move)
         self.availables = self.board.availables
+        self.current_player = self.board.get_current_player()
         """
         moveの仕様
         D=方向数。下を0として左回り。[0,7]
@@ -86,7 +89,7 @@ class Board(object):
 
     def game_end(self):
         """Check whether the game is ended or not"""
-        return self.game_end()
+        return self.board.game_end()
 
     def get_current_player(self):
         return self.board.get_current_player()

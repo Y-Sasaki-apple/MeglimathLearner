@@ -185,10 +185,14 @@ class MCTSPlayer(object):
     def get_action(self, board, temp=1e-3, return_prob=0):
         sensible_moves = board.availables
         # the pi vector returned by MCTS as in the alphaGo Zero paper
-        move_probs = np.zeros(board.width*board.height)
-        if len(sensible_moves) > 0:
+        # move_probs = np.zeros(board.width*board.height)
+        move_probs = np.zeros(17*17)
+        #if len(sensible_moves) > 0:
+        """一時的に変更中"""
+        if True:
             acts, probs = self.mcts.get_move_probs(board, temp)
-            move_probs[list(acts)] = probs
+            #move_probs[list(acts)] = probs
+            move_probs = probs            
             if self._is_selfplay:
                 # add Dirichlet Noise for exploration (needed for
                 # self-play training)
@@ -213,6 +217,7 @@ class MCTSPlayer(object):
                 return move
         else:
             print("WARNING: the board is full")
+            
 
     def __str__(self):
         return "MCTS {}".format(self.player)

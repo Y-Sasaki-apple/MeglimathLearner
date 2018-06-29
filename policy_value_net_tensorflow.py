@@ -18,9 +18,9 @@ class PolicyValueNet():
         # Define the tensorflow neural network
         # 1. Input:
         self.input_states = tf.placeholder(
-                tf.float32, shape=[None, 7, board_height, board_width])
+                tf.float32, shape=[None, 8, board_height, board_width])
         self.input_states_reshaped = tf.reshape(
-                self.input_states, [-1, board_height, board_width, 7])
+                self.input_states, [-1, board_height, board_width, 8])
         # 2. Common Networks Layers
         self.conv1 = tf.layers.conv2d(inputs=self.input_states_reshaped,
                                       filters=32, kernel_size=[3, 3],
@@ -41,7 +41,7 @@ class PolicyValueNet():
         # 3-2 Full connected layer, the output is the log probability of moves
         # on each slot on the board
         self.action_fc = tf.layers.dense(inputs=self.action_conv_flat,
-                                         units=board_height * board_width,
+                                         units=17*17,
                                          activation=tf.nn.log_softmax)
         # 4 Evaluation Networks
         self.evaluation_conv = tf.layers.conv2d(inputs=self.conv3, filters=2,
@@ -66,7 +66,7 @@ class PolicyValueNet():
                                                        self.evaluation_fc2)
         # 3-2. Policy Loss function
         self.mcts_probs = tf.placeholder(
-                tf.float32, shape=[None, board_height * board_width])
+                tf.float32, shape=[None, 17*17])           ##17*17
         self.policy_loss = tf.negative(tf.reduce_mean(
                 tf.reduce_sum(tf.multiply(self.mcts_probs, self.action_fc), 1)))
         # 3-3. L2 penalty (regularization)
@@ -118,7 +118,7 @@ class PolicyValueNet():
         """
         legal_positions = board.availables
         current_state = np.ascontiguousarray(board.current_state().reshape(
-                -1, 5, self.board_width, self.board_height))
+                -1, 8, self.board_width, self.board_height))
         act_probs, value = self.policy_value(current_state)
         act_probs = zip(legal_positions, act_probs[0][legal_positions])
         return act_probs, value
@@ -126,6 +126,11 @@ class PolicyValueNet():
     def train_step(self, state_batch, mcts_probs, winner_batch, lr):
         """perform a training step"""
         winner_batch = np.reshape(winner_batch, (-1, 1))
+        """ kokuta - 2018/06/29 
+        self.session.run() で不具合発生 tf.placestructure の self.mcts_probs と mcts_probs の要素のサイズが異なります。
+        self.mcts_probs の 要素のサイズ : (289,) = (17*17,)
+        mcts_probs の 要素のサイズ      : (42,) board の available に起因? 要検討
+        """
         loss, entropy, _ = self.session.run(
                 [self.loss, self.entropy, self.optimizer],
                 feed_dict={self.input_states: state_batch,
