@@ -58,7 +58,7 @@ class Board(object):
 
         square_state = np.zeros((8, self.width, self.height))   # {0}層に変更
         curr_state = self.board.get_current_state()
-        curr_player = self.get_current_player()
+        curr_player = self.board.get_current_player()
         player_state = self.board.get_player_state()
         agents = ((1,2),(3,4))[curr_player]
         enemy_agents = ((3,4),(1,2))[curr_player]
@@ -92,7 +92,7 @@ class Board(object):
         return self.board.game_end()
 
     def get_current_player(self):
-        return self.board.get_current_player()
+        return self.players[self.board.get_current_player()]
 
 
 class Game(object):
