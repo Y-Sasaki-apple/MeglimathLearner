@@ -103,6 +103,7 @@ class MCTS(object):
         self._c_puct = c_puct
         self._n_playout = n_playout
 
+    @profile
     def _playout(self, state):
         """Run a single playout from the root to the leaf, getting a value at
         the leaf and propagating it back through its parents.
@@ -136,6 +137,7 @@ class MCTS(object):
         # Update value and visit count of nodes in this traversal.
         node.update_recursive(-leaf_value)
 
+    @profile
     def get_move_probs(self, state, temp=1e-3):
         """Run all playouts sequentially and return the available actions and
         their corresponding probabilities.

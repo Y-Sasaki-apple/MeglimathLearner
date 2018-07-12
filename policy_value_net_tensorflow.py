@@ -98,6 +98,7 @@ class PolicyValueNet():
         if model_file is not None:
             self.restore_model(model_file)
 
+    @profile
     def policy_value(self, state_batch):
         """
         input: a batch of states
@@ -110,6 +111,7 @@ class PolicyValueNet():
         act_probs = np.exp(log_act_probs)
         return act_probs, value
 
+    @profile
     def policy_value_fn(self, board):
         """
         input: board
@@ -117,8 +119,9 @@ class PolicyValueNet():
         action and the score of the board state
         """
         legal_positions = board.availables
-        current_state = np.ascontiguousarray(board.current_state().reshape(
-                -1, 8, self.board_width, self.board_height))
+        data=board.current_state().reshape(
+                -1, 8, self.board_width, self.board_height)
+        current_state = np.ascontiguousarray(data)
         act_probs, value = self.policy_value(current_state)
         act_probs = zip(legal_positions, act_probs[0][legal_positions])
         return act_probs, value
