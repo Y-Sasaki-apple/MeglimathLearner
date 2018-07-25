@@ -98,7 +98,7 @@ class PolicyValueNet():
         if model_file is not None:
             self.restore_model(model_file)
 
-    @profile
+    #@profile
     def policy_value(self, state_batch):
         """
         input: a batch of states
@@ -111,7 +111,7 @@ class PolicyValueNet():
         act_probs = np.exp(log_act_probs)
         return act_probs, value
 
-    @profile
+    #@profile
     def policy_value_fn(self, board):
         """
         input: board
