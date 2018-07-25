@@ -28,29 +28,6 @@ class Board(object):
         self.current_player = self.get_current_player()
         self.availables = self.board.availables
 
-
-    def move_to_location(self, move):
-        """
-        3*3 board's moves like:
-        6 7 8
-        3 4 5
-        0 1 2
-        and move 5's location is (1,2)
-        """
-        h = move // self.width
-        w = move % self.width
-        return [h, w]
-
-    def location_to_move(self, location):
-        if len(location) != 2:
-            return -1
-        h = location[0]
-        w = location[1]
-        move = h * self.width + w
-        if move not in range(self.width * self.height):
-            return -1
-        return move
-
     def current_state(self):
         """return the board state from the perspective of the current player.
         state shape: 5*width*height
@@ -69,7 +46,7 @@ class Board(object):
         square_state[3][player_state == agents[1]] = 1.0    # エージェントの座標2
         square_state[4][player_state == enemy_agents[0]] = 1.0    # 敵エージェントの座標1
         square_state[5][player_state == enemy_agents[1]] = 1.0    # 敵エージェントの座標2
-        square_state[6] = (self.board.get_board_state()+16)/np.max(self.board.get_board_state()+16)
+        square_state[6] = self.board.get_board_state()/16.0
         square_state[7][:,:] = curr_player
         return square_state[:, ::-1, :]
 
