@@ -33,7 +33,7 @@ class Board(object):
         state shape: 5*width*height
         """
 
-        square_state = np.zeros((8, self.width, self.height))   # {0}層に変更
+        square_state = np.zeros((6, self.width, self.height))   # {0}層に変更
         curr_state = self.board.get_current_state()
         curr_player = self.board.get_current_player()
         other_player = 1 if curr_player==0 else 0
@@ -44,10 +44,9 @@ class Board(object):
         square_state[1][curr_state == other_player] = 1.0
         square_state[2][player_state == agents[0]] = 1.0    # エージェントの座標1
         square_state[3][player_state == agents[1]] = 1.0    # エージェントの座標2
-        square_state[4][player_state == enemy_agents[0]] = 1.0    # 敵エージェントの座標1
-        square_state[5][player_state == enemy_agents[1]] = 1.0    # 敵エージェントの座標2
-        square_state[6] = self.board.get_board_state()/16.0
-        square_state[7][:,:] = curr_player
+        square_state[4][(player_state == enemy_agents[0] )   # 敵エージェントの座標1
+           | (player_state == enemy_agents[1])] = 1.0    # 敵エージェントの座標2
+        square_state[5] = self.board.get_board_state()/16.0
         return square_state[:, ::-1, :]
 
     def do_move(self, move):

@@ -18,9 +18,9 @@ class PolicyValueNet():
         # Define the tensorflow neural network
         # 1. Input:
         self.input_states = tf.placeholder(
-                tf.float32, shape=[None, 8, board_height, board_width])
+                tf.float32, shape=[None, 6, board_height, board_width])
         self.input_states_reshaped = tf.reshape(
-                self.input_states, [-1, board_height, board_width, 8])
+                self.input_states, [-1, board_height, board_width, 6])
         # 2. Common Networks Layers
         self.conv1 = tf.layers.conv2d(inputs=self.input_states_reshaped,
                                       filters=32, kernel_size=[3, 3],
@@ -120,7 +120,7 @@ class PolicyValueNet():
         """
         legal_positions = board.availables
         data=board.current_state().reshape(
-                -1, 8, self.board_width, self.board_height)
+                -1, 6, self.board_width, self.board_height)
         current_state = np.ascontiguousarray(data)
         act_probs, value = self.policy_value(current_state)
         act_probs = zip(legal_positions, act_probs[0][legal_positions])
