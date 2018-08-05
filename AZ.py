@@ -127,11 +127,11 @@ def test_policy_and_save_best_policy():
     if win_ratio > best_win_ratio:
         print("New best policy!!!!!!!!")
         best_win_ratio = win_ratio
-        policy_value_net.save_model('./best_policy.model')
+        policy_value_net.save_model('./models/best_policy.model')
         if (best_win_ratio == 1.0 and
                 pure_mcts_playout_num < 5000):
             pure_mcts_playout_num += 1000
             best_win_ratio = 0.0
 
 def save_model(filename):
-    policy_value_net.save_model('./current_policy.model')
+    policy_value_net.save_model('./models/current_policy.model')
