@@ -6,16 +6,12 @@ network to guide the tree search and evaluate the leaf nodes
 @author: Junxiao Song
 """
 
-from AZMCTS import MCTSPlayer
+from Player import MCTSPlayer
 from AZNet import PolicyValueNet
 import numpy as np
 import random
-from game_ctrl import Game
 from board_ctrl import Board
-board_width = 6
-board_height = 6
-board = Board(height=board_height,width=board_width)
-game = Game(board)
+import game_ctrl as Game
 # def policy_evaluate(n_games=10):
 #     """
 #     モンテカルロと戦って評価
@@ -64,7 +60,7 @@ def get_equi_data(play_data):
     return extend_data
 
 def collect_selfplay_data(temp):
-    winner, play_data = game.start_self_play(mcts_player,temp=temp)
+    winner, play_data = Game.start_self_play(mcts_player,temp=temp)
     mcts_player.reset_player()
     play_data = list(play_data)[:]
     play_data = get_equi_data(play_data)
