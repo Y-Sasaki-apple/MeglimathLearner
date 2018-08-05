@@ -8,10 +8,6 @@ References:
 ### Update 2018.2.24: supports training with TensorFlow!
 ### Update 2018.1.17: supports training with PyTorch!
 
-### Example Games Between Trained Models
-- Each move with 400 MCTS playouts:  
-![playout400](https://raw.githubusercontent.com/junxiaosong/AlphaZero_Gomoku/master/playout400.gif)
-
 ### Requirements
 To play with the trained AI models, only need:
 - Python >= 2.7
