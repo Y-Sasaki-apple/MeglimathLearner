@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-import MeglimathPy as meg
 from board_ctrl import Board
 from os import system
 def print_result(winner):
@@ -14,6 +13,7 @@ def graphic(board,start_player,cls=False):
     width = board.width
     height = board.height
     if cls:system('cls')
+    print("Turn:",board.remain_turn)
     print("Player with 1,2,'O'", board.board.get_point(0))
     print("Player with 3,4,'X'", board.board.get_point(1))
     print()
@@ -79,20 +79,8 @@ def start_self_play(player, is_shown=0, temp=1e-3):
             return winner, zip(states, mcts_probs, winners_z)
 
 import unittest
-import random
-
-class random_player():
-    """
-    Playerのスタブ
-    """
-    def get_action(self,board,temp=None,return_prob=0):
-        if return_prob==1:
-            prob = np.zeros(17*17)
-            act=random.choice(board.availables)
-            prob[act]=1
-            return act,prob
-        else:
-            return random.choice(board.availables)
+from Util import random_player,random_network
+from Player import MCTSPlayer
 
 class gameTest(unittest.TestCase):
     def test_self_play(self):
@@ -107,14 +95,25 @@ class gameTest(unittest.TestCase):
             winner = data[2]
             self.assertEqual(winner.shape,())
         winner_batch = [data[2] for data in batch]
-        self.assertEqual(winner_batch[win],1.0)
-        self.assertEqual(winner_batch[win+1],-1.0)
+        if win!=-1:
+            self.assertEqual(winner_batch[win],1.0)
+            self.assertEqual(winner_batch[win+1],-1.0)
 
     def test_play(self):
-        win=start_play(random_player(),random_player(),0,0)
-        win=start_play(random_player(),random_player(),1,0)
+        start_play(random_player(),random_player(),0,0)
+        start_play(random_player(),random_player(),1,0)
         self.assertRaises(Exception,start_play,random_player(),random_player(),2)
+        #self.player_self_play()
+        self.player_play()
 
+    def player_play(self):
+        pl1=MCTSPlayer(random_network(),0.1,1000,0)
+        pl2=MCTSPlayer(random_network(),0.1,1000,0)
+        start_play(pl1,pl2,start_player=0,is_shown=1)      
+
+    def player_self_play(self):
+        pl1=MCTSPlayer(random_network(),0.01,100,1)
+        start_self_play(pl1,1,1.0)
 
 if __name__=="__main__":
     unittest.main()

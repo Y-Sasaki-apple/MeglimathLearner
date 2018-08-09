@@ -40,3 +40,13 @@ class MCTSPlayer:
         else:
             return move
             
+import unittest
+from Util import random_network
+
+class mctsTest(unittest.TestCase):
+    def test_init(self):
+        pl=MCTSPlayer(random_network,1,400,0)
+        self.assertEqual(pl._is_selfplay,0)
+
+if __name__=="__main__":
+    unittest.main()
