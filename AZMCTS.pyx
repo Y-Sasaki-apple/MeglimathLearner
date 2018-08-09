@@ -7,6 +7,7 @@ network to guide the tree search and evaluate the leaf nodes
 """
 
 import numpy as np
+cimport numpy as np
 import copy
 
 def softmax(x):
@@ -14,16 +15,8 @@ def softmax(x):
     probs /= np.sum(probs)
     return probs
 
-#cdef struct NodeData:
-#    NodeData* parent
-#    NodeData* children[17*17]
-#    float Q
-#    float u
-#   float P
-#    int n_visits
-
 class TreeNode:
-    def __init__(self, parent, prior_p):
+    def __init__(self, parent,double prior_p):
         self._parent = parent
         self._children = {}
         self._n_visits = 0
@@ -36,20 +29,20 @@ class TreeNode:
             if action not in self._children:
                 self._children[action] = TreeNode(self, prob)
 
-    def select(self, c_puct):
+    def select(self,double c_puct):
         return max(self._children.items(),
                    key=lambda act_node: act_node[1].get_value(c_puct))
 
-    def update(self, leaf_value):
+    def update(self,double leaf_value):
         self._n_visits += 1
         self._Q += 1.0*(leaf_value - self._Q) / self._n_visits
 
-    def update_recursive(self, leaf_value):
+    def update_recursive(self,double leaf_value):
         if self._parent:
             self._parent.update_recursive(-leaf_value)
         self.update(leaf_value)
 
-    def get_value(self, c_puct):
+    def get_value(self,double c_puct):
         self._u = (c_puct * self._P *
                    np.sqrt(self._parent._n_visits) / (1 + self._n_visits))
         return self._Q + self._u
@@ -60,9 +53,9 @@ class TreeNode:
     def is_root(self):
         return self._parent is None
 
-
+from board_ctrl import Board
 class MCTS:
-    def __init__(self, policy_value_fn, c_puct=5, n_playout=10000):
+    def __init__(self, policy_value_fn,int c_puct=5,int n_playout=10000):
         self._root = TreeNode(None, 1.0)
         self._policy = policy_value_fn
         self._c_puct = c_puct
@@ -109,7 +102,7 @@ class MCTS:
 
         return acts, act_probs
 
-    def update_with_move(self, last_move):
+    def update_with_move(self,int last_move):
         if last_move in self._root._children:
             self._root = self._root._children[last_move]
             self._root._parent = None
@@ -143,7 +136,6 @@ class mctsTest(unittest.TestCase):
     def test_state_eval(self):
         network = random_network()
         mcts = MCTS(network.policy_value_fn,0,400)
-        from board_ctrl import Board
         board = Board()
         board.init_board(turn=2)
         

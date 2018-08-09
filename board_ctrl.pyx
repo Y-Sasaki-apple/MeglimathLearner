@@ -6,13 +6,12 @@ import MeglimathPy as meg
 
 class Board(object):
     """board for the game"""
-
     def __init__(self, **kwargs):
         self.width = int(kwargs.get('width', 6))
         self.height = int(kwargs.get('height', 6))
         self.board = meg.Board()
 
-    def init_board(self, start_player=0,turn=60):
+    def init_board(self,int start_player=0,int turn=60):
         self.board.init_board(turn,start_player)
 
     @property
@@ -49,7 +48,7 @@ class Board(object):
         square_state[7] = self.board.remain_turn/60.0
         return square_state[:, ::-1, :]
 
-    def do_move(self, move):
+    def do_move(self,int move):
         self.board.do_move(move)
         """
         moveの仕様
