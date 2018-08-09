@@ -14,6 +14,14 @@ def softmax(x):
     probs /= np.sum(probs)
     return probs
 
+#cdef struct NodeData:
+#    NodeData* parent
+#    NodeData* children[17*17]
+#    float Q
+#    float u
+#   float P
+#    int n_visits
+
 class TreeNode:
     def __init__(self, parent, prior_p):
         self._parent = parent
@@ -71,7 +79,6 @@ class MCTS:
     def _state_eval(self,state):
         end, winner = state.game_end()    
         if end:
-            print("this route is winner {}".format(winner))
             if winner == -1:
                 leaf_value = 0.0
             else:

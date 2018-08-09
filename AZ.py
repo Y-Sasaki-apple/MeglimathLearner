@@ -38,6 +38,21 @@ import game_ctrl as Game
 #             pure_mcts_playout_num,
 #             win_cnt[1], win_cnt[2], win_cnt[-1]))
 #     return win_ratio
+def policy_view(c_puct,n_playout,n_games=2):
+    """
+    自分と戦って閲覧
+    """
+    current_mcts_player1 = MCTSPlayer(policy_value_net,
+                                        c_puct=c_puct,
+                                        n_playout=n_playout)
+    current_mcts_player2 = MCTSPlayer(policy_value_net,
+                                        c_puct=c_puct,
+                                        n_playout=n_playout)
+    for i in range(n_games):
+        Game.start_play(current_mcts_player1,
+                                 current_mcts_player2,
+                                        start_player=i % 2,
+                                        is_shown=1)
 
 policy_value_net = None
 mcts_player = None
