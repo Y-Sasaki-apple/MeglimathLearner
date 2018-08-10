@@ -53,7 +53,6 @@ class TreeNode:
     def is_root(self):
         return self._parent is None
 
-from board_ctrl import Board
 class MCTS:
     def __init__(self, policy_value_fn,int c_puct=5,int n_playout=10000):
         self._root = TreeNode(None, 1.0)
@@ -112,6 +111,7 @@ class MCTS:
 
 import unittest
 from Util import random_network
+from board_ctrl import Board
 
 class mctsTest(unittest.TestCase):
     def setUp(self):

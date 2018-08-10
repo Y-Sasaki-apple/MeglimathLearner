@@ -20,17 +20,17 @@ def graphic(board,start_player,cls=False):
     for x in range(width):
         print("{0:8}".format(x), end='')
     print('\r\n')
-    for i in range(height):
+    for i in range(width):
         print("{0:4d}".format(i), end='')
-        for j in range(width):
+        for j in range(height):
             printed=''
-            if board.board.get_current_state()[i,j] ==0 :
+            if board.board.get_current_state()[j,i] ==0 :
                 printed += 'O'
-            elif board.board.get_current_state()[i,j] ==1:
+            elif board.board.get_current_state()[j,i] ==1:
                 printed+='X' 
-            printed += str(board.board.get_board_state()[i,j])
-            if board.board.get_player_state()[i,j] != 0:
-                printed += '('+str(board.board.get_player_state()[i,j])+')'
+            printed += str(board.board.get_board_state()[j,i])
+            if board.board.get_player_state()[j,i] != 0:
+                printed += '('+str(board.board.get_player_state()[j,i])+')'
             print(printed.center(8),end='')
         print('\r\n\r\n')
 

@@ -20,7 +20,6 @@ class MCTSPlayer:
     def reset_player(self):
         self.mcts.update_with_move(-1)
 
-    @profile
     def get_action(self,board, temp=1e-3, return_prob=0):
         move_probs = np.zeros(17*17)
         acts, probs = self.mcts.get_move_probs(board, temp)

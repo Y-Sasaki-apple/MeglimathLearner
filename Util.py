@@ -35,3 +35,22 @@ class random_player():
             return act,prob
         else:
             return random.choice(board.availables)
+
+class Human():
+    def __init__(self):
+        pass
+
+    def get_action(self, board):
+        try:
+            moves = input("Your move: ")
+            moves = [int(n, 10) for n in moves.split(",")]
+            dirdir = {1:5,2:6,3:7,4:4,5:0,6:0,7:3,8:2,9:1}
+            if moves[1]==2:moves[0]=5
+            if moves[3]==2:moves[2]=5
+            move = dirdir[moves[2]]+moves[3]*8+dirdir[moves[0]]*17+moves[1]*17*8
+        except Exception as e:
+            move = -1
+        if move == -1 or move not in board.availables:
+            print("invalid move")
+            move = self.get_action(board)
+        return move

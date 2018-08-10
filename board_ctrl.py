@@ -11,7 +11,7 @@ class Board(object):
         self.height = int(kwargs.get('height', 6))
         self.board = meg.Board()
 
-    def init_board(self,int start_player=0,int turn=60):
+    def init_board(self,start_player=0,turn=60):
         self.board.init_board(turn,start_player)
 
     @property
@@ -48,7 +48,7 @@ class Board(object):
         square_state[7] = self.board.remain_turn/60.0
         return square_state[:, ::-1, :]
 
-    def do_move(self,int move):
+    def do_move(self,move):
         self.board.do_move(move)
         """
         moveの仕様
@@ -64,6 +64,19 @@ class Board(object):
     def game_end(self):
         """Check whether the game is ended or not"""
         return self.board.game_end()
+
+    def make_board(self,size,points,agent_points,tile,remain_turn):
+        self.board.make_board(size,points,
+            agent_points[0],agent_points[1],agent_points[2],agent_points[3],
+            tile,remain_turn)
+
+    def __str__(self):
+        """
+        boardの情報を表示する。縦横逆なので注意
+        """
+        return (str(self.board.get_board_state())+'\n'+
+                str(self.board.get_current_state())+'\n'+
+                str(self.board.get_player_state()))
 
 import unittest
 import random
@@ -125,7 +138,25 @@ class boardTest(unittest.TestCase):
         self.assertEqual(len(enemypos[0]),2)
         self.assertEqual(len(enemypos[1]),2)     
 
+    def test_make_board(self):
+        b=self.bd
+        size=(7,5)
+        points=np.array([0,5,4,16,
+                         2,-10,0,5,
+                         3,4,2,-16])
+        agent_points=[(0,0),(4,2),(6,2),(6,4)]
+        tile=np.array(['a','-','-','-','-','-','-',
+                       'a','-','-','-','-','-','-',
+                       'a','-','-','-','a','-','b',
+                       'a','-','-','-','-','-','-',
+                       'a','-','-','-','-','-','b'])
+        remain=50
+        b.make_board(size,points,agent_points,tile,remain)
+        print(b)
+
+
     def test_move(self):
+        return
         b = self.bd
         b.init_board()
         self.check_move(b)
