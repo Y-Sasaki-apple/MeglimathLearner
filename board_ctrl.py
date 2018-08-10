@@ -2,7 +2,7 @@
 
 import numpy as np
 import MeglimathPy as meg
-
+from os import system
 
 class Board(object):
     """board for the game"""
@@ -66,6 +66,8 @@ class Board(object):
         return self.board.game_end()
 
     def make_board(self,size,points,agent_points,tile,remain_turn):
+        self.width = size[0]
+        self.height = size[1]
         self.board.make_board(size,points,
             agent_points[0],agent_points[1],agent_points[2],agent_points[3],
             tile,remain_turn)
@@ -77,6 +79,32 @@ class Board(object):
         return (str(self.board.get_board_state())+'\n'+
                 str(self.board.get_current_state())+'\n'+
                 str(self.board.get_player_state()))
+
+    def graphic(self,start_player,cls=False):
+        if self.current_player != start_player: return
+        width = self.width
+        height = self.height
+        if cls:system('cls')
+        print("Turn:",self.remain_turn)
+        print("Player with 1,2,'O'", self.board.get_point(0))
+        print("Player with 3,4,'X'", self.board.get_point(1))
+        print()
+        for x in range(width):
+            print("{0:8}".format(x), end='')
+        print('\r\n')
+        for i in range(width):
+            print("{0:4d}".format(i), end='')
+            for j in range(height):
+                printed=''
+                if self.board.get_current_state()[j,i] ==0 :
+                    printed += 'O'
+                elif self.board.get_current_state()[j,i] ==1:
+                    printed+='X' 
+                printed += str(self.board.get_board_state()[j,i])
+                if self.board.get_player_state()[j,i] != 0:
+                    printed += '('+str(self.board.get_player_state()[j,i])+')'
+                print(printed.center(8),end='')
+            print('\r\n\r\n')
 
 import unittest
 import random

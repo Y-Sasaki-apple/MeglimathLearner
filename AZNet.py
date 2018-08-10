@@ -88,20 +88,6 @@ class PolicyValueNet():
         act_probs = np.exp(log_act_probs)
         return act_probs, value
 
-    def policy_value_fn(self, board):
-        """
-        input: board
-        output: a list of (action, probability) tuples for each available
-        action and the score of the board state
-        """
-        legal_positions = board.availables
-        data=board.current_state().reshape(
-                -1, 8, self.board_width, self.board_height)
-        current_state = np.ascontiguousarray(data)
-        act_probs, value = self.policy_value(current_state)
-        act_probs = zip(legal_positions, act_probs[0][legal_positions])
-        return act_probs, value
-
     def train_step(self, state_batch, mcts_probs, winner_batch, lr):
         """perform a training step"""
         winner_batch = np.reshape(winner_batch, (-1, 1))

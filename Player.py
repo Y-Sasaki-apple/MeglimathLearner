@@ -12,13 +12,33 @@ import numpy as np
 import copy
 
 class MCTSPlayer:
-    def __init__(self,policy_value,
+    def __init__(self,network,
                     c_puct=5, n_playout=2000, is_selfplay=0):
-        self.mcts = MCTS(policy_value.policy_value_fn, c_puct, n_playout)
+        if hasattr(network,'policy_value'):
+            policy_value_fn = self.make_policy_value_fn(network.policy_value)
+        else:
+            policy_value_fn = network.policy_value_fn
+        self.mcts = MCTS(policy_value_fn, c_puct, n_playout)
         self._is_selfplay = is_selfplay
 
     def reset_player(self):
         self.mcts.update_with_move(-1)
+
+    def make_policy_value_fn(self,policy_value):
+        def policy_value_fn(board):
+            """
+            input: board
+            output: a list of (action, probability) tuples for each available
+            action and the score of the board state
+            """
+            legal_positions = board.availables
+            data=board.current_state().reshape(
+                    -1, 8, board.width, board.height)
+            current_state = np.ascontiguousarray(data)
+            act_probs, value = policy_value(current_state)
+            act_probs = zip(legal_positions, act_probs[0][legal_positions])
+            return act_probs, value
+        return policy_value_fn
 
     def get_action(self,board, temp=1e-3, return_prob=0):
         move_probs = np.zeros(17*17)
