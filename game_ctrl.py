@@ -75,14 +75,17 @@ class gameTest(unittest.TestCase):
 
     def test_play(self):
         start_play(random_player(),random_player(),0,0)
-        start_play(random_player(),random_player(),1,1)
-        self.assertRaises(Exception,start_play,random_player(),random_player(),2)
+        start_play(random_player(),random_player(),1,0)
+        #self.assertRaises(Exception,start_play,random_player(),random_player(),2)
         #self.player_self_play()
-        #self.player_play()
+        self.player_play()
 
     def player_play(self):
-        pl1=MCTSPlayer(random_network(),0.1,100,0)
-        pl2=MCTSPlayer(random_network(),0.1,100,0)
+        from AZNet import PolicyValueNet
+        policy_value_net = PolicyValueNet(6,6,
+                                                model_file='models/current_policy.model')
+        pl1=MCTSPlayer(policy_value_net,1,400,0)
+        pl2=MCTSPlayer(random_network(),1,400,0)
         start_play(pl1,pl2,start_player=0,is_shown=1)      
 
     def player_self_play(self):

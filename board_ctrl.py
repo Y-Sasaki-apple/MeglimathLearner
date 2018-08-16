@@ -80,8 +80,8 @@ class Board(object):
                 str(self.board.get_current_state())+'\n'+
                 str(self.board.get_player_state()))
 
-    def graphic(self,start_player,cls=False):
-        if self.current_player != start_player: return
+    def graphic(self,start_player=None,cls=False):
+        if (start_player is not None) and (self.current_player != start_player): return
         width = self.width
         height = self.height
         if cls:system('cls')
@@ -92,9 +92,9 @@ class Board(object):
         for x in range(width):
             print("{0:8}".format(x), end='')
         print('\r\n')
-        for i in range(width):
+        for i in range(height):
             print("{0:4d}".format(i), end='')
-            for j in range(height):
+            for j in range(width):
                 printed=''
                 if self.board.get_current_state()[j,i] ==0 :
                     printed += 'O'

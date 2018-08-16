@@ -10,9 +10,9 @@ class random_network():
     def policy_value_fn(self, board):
         legal_positions = board.availables
         value = 0
-        # value = (board.board.get_point(0)-board.board.get_point(1))/100
-        # if board.current_player==1:
-        #     value = -value
+        value = (board.board.get_point(0)-board.board.get_point(1))/100
+        if board.current_player==1:
+            value = -value
         act_probs = [1.0/len(legal_positions) for _ in legal_positions]
         # act_probs = np.array([random.random() for _ in legal_positions])
         # def softmax(x):

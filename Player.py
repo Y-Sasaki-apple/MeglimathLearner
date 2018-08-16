@@ -6,8 +6,8 @@ network to guide the tree search and evaluate the leaf nodes
 @author: Junxiao Song
 """
 
-#from AZMCTS import MCTS
-from az_mcts import MCTS
+from AZMCTS import MCTS
+#from az_mcts import MCTS
 import numpy as np
 import copy
 
