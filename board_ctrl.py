@@ -3,16 +3,19 @@
 import numpy as np
 import MeglimathPy as meg
 from os import system
+import random
 
 class Board(object):
     """board for the game"""
-    def __init__(self, **kwargs):
-        self.width = int(kwargs.get('width', 6))
-        self.height = int(kwargs.get('height', 6))
+    def __init__(self):
         self.board = meg.Board()
 
-    def init_board(self,start_player=0,turn=60):
-        self.board.init_board(turn,start_player)
+    def init_board(self,start_player=0,turn=60,size=None):
+        if size==None:
+            size=random.choice([(11,12)])
+            #サイズ決める
+        #サイズ決めてランダム初期化
+        self.board.init_board(turn,start_player,size[0],size[1])
 
     @property
     def availables(self):
@@ -30,22 +33,28 @@ class Board(object):
         """return the board state from the perspective of the current player.
         state shape: 5*width*height
         """
-        square_state = np.zeros((8, self.width, self.height))   # {0}層に変更
+        square_state = np.zeros((9, 12, 12))   # {0}層に変更
+        data_size=(12,12)
         curr_state = self.board.get_current_state()
+        input_size=curr_state.shape
+        raw_state = np.zeros((9,input_size[0],input_size[1]))
+        pad_size=[(0,0),(0,data_size[0]-input_size[0]),(0,data_size[1]-input_size[1])]
         curr_player = self.current_player
         other_player = 1 if curr_player==0 else 0
         player_state = self.board.get_player_state()
         agents = ((1,2),(3,4))[curr_player]
         enemy_agents = ((3,4),(1,2))[curr_player]
-        square_state[0][curr_state == curr_player] = 1.0
-        square_state[1][curr_state == other_player] = 1.0
-        square_state[2][player_state == agents[0]] = 1.0    # エージェントの座標1
-        square_state[3][player_state == agents[1]] = 1.0    # エージェントの座標2
-        square_state[4][(player_state == enemy_agents[0] )   # 敵エージェントの座標1
+        raw_state[0][curr_state == curr_player] = 1.0
+        raw_state[1][curr_state == other_player] = 1.0
+        raw_state[2][player_state == agents[0]] = 1.0    # エージェントの座標1
+        raw_state[3][player_state == agents[1]] = 1.0    # エージェントの座標2
+        raw_state[4][(player_state == enemy_agents[0] )   # 敵エージェントの座標1
            | (player_state == enemy_agents[1])] = 1.0    # 敵エージェントの座標2
-        square_state[5] = self.board.get_board_state()/16.0
-        square_state[6] = np.abs(self.board.get_board_state())/16.0
-        square_state[7] = self.board.remain_turn/60.0
+        raw_state[5] = self.board.get_board_state()/16.0 #得点
+        raw_state[6] = np.abs(self.board.get_board_state())/16.0 #得点の絶対値
+        raw_state[7] = self.board.remain_turn/60.0
+        raw_state[8] = np.ones(input_size)
+        square_state = np.pad(raw_state,pad_size,"constant")
         return square_state[:, ::-1, :]
 
     def do_move(self,move):
@@ -82,8 +91,9 @@ class Board(object):
 
     def graphic(self,start_player=None,cls=False):
         if (start_player is not None) and (self.current_player != start_player): return
-        width = self.width
-        height = self.height
+        curr_state = self.board.get_current_state()
+        input_size=curr_state.shape
+        width,height=input_size
         if cls:system('cls')
         print("Turn:",self.remain_turn)
         print("Player with 1,2,'O'", self.board.get_point(0))
@@ -114,11 +124,8 @@ class boardTest(unittest.TestCase):
         self.bd=Board()
 
     def test_construct(self):
-        self.assertEqual(self.bd.height,6)
-        self.assertEqual(self.bd.width,6)
-        b = Board(width=11,height=12)
-        self.assertEqual(b.height,12)
-        self.assertEqual(b.width,11)
+        b = Board()
+        b.init_board(0,60,(12,11))
 
     def test_init_board(self):
         b = self.bd

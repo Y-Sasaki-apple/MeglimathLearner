@@ -33,7 +33,7 @@ class MCTSPlayer:
             """
             legal_positions = board.availables
             data=board.current_state().reshape(
-                    -1, 8, board.width, board.height)
+                    -1, 9, 12, 12)
             current_state = np.ascontiguousarray(data)
             act_probs, value = policy_value(current_state)
             act_probs = zip(legal_positions, act_probs[0][legal_positions])

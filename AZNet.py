@@ -16,9 +16,9 @@ class PolicyValueNet():
         self.board_height = board_height
 
         self.input_states = tf.placeholder(
-                tf.float32, shape=[None, 8, board_height, board_width])
+                tf.float32, shape=[None, 9, board_height, board_width])
         self.input_states_reshaped = tf.reshape(
-                self.input_states, [-1, board_height, board_width, 8])
+                self.input_states, [-1, board_height, board_width, 9])
         self.conv1 = tf.layers.conv2d(inputs=self.input_states_reshaped,
                                       filters=32, kernel_size=[3, 3],
                                       padding="same", activation=tf.nn.relu)

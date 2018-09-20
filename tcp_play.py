@@ -10,8 +10,8 @@ host = '127.0.0.1'
 port = 31400
 bufsize = 4096
 init_model='models/current_policy.model'
-board_width = 6
-board_height = 6
+board_width = 12
+board_height = 12
 c_puct = 0
 n_playout = 400
 if init_model:
