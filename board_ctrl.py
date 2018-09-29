@@ -10,10 +10,14 @@ class Board(object):
     def __init__(self):
         self.board = meg.Board()
 
-    def init_board(self,start_player=0,turn=60,size=None):
-        if size==None:
-            size=random.choice([(11,12)])
+    def init_board(self,start_player=0,turn=None,size=None):
+        if size is None:
+            size=random.choice([(7,12),(8,10),(8,11),(8,12),(9,9),(9,10),(9,11),(9,12),
+            (10,8),(10,9),(10,10),(10,11),(10,12),(11,8),(11,9),(11,10),(11,11),(11,12),
+            (12,7),(12,8),(12,9),(12,10),(12,11),(12,12)])
             #サイズ決める
+        if turn is None:
+            turn=random.choice(range(60,120+1))
         #サイズ決めてランダム初期化
         self.board.init_board(turn,start_player,size[0],size[1])
 
