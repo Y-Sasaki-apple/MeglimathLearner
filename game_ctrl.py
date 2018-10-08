@@ -82,8 +82,7 @@ class gameTest(unittest.TestCase):
 
     def player_play(self):
         from AZNet import PolicyValueNet
-        policy_value_net = PolicyValueNet(6,6,
-                                                model_file='models/current_policy.model')
+        policy_value_net = PolicyValueNet(model_file='models/current_policy.model')
         pl1=MCTSPlayer(policy_value_net,1,400,0)
         pl2=MCTSPlayer(random_network(),1,400,0)
         start_play(pl1,pl2,start_player=0,is_shown=1)      

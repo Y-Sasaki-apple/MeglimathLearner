@@ -11,14 +11,11 @@ import tensorflow as tf
 
 
 class PolicyValueNet():
-    def __init__(self, board_width, board_height, model_file=None):
-        self.board_width = board_width
-        self.board_height = board_height
-
+    def __init__(self, model_file=None):
         self.input_states = tf.placeholder(
-                tf.float32, shape=[None, 9, board_height, board_width])
+                tf.float32, shape=[None, 9, 12, 12])
         self.input_states_reshaped = tf.reshape(
-                self.input_states, [-1, board_height, board_width, 9])
+                self.input_states, [-1, 12, 12, 9])
         self.conv1 = tf.layers.conv2d(inputs=self.input_states_reshaped,
                                       filters=32, kernel_size=[3, 3],
                                       padding="same", activation=tf.nn.relu)
@@ -32,7 +29,7 @@ class PolicyValueNet():
                                             kernel_size=[1, 1], padding="same",
                                             activation=tf.nn.relu)
         self.action_conv_flat = tf.reshape(
-                self.action_conv, [-1, 4 * board_height * board_width])
+                self.action_conv, [-1, 4 * 12 * 12])
         self.action_fc = tf.layers.dense(inputs=self.action_conv_flat,
                                          units=17*17,
                                          activation=tf.nn.log_softmax)
@@ -41,7 +38,7 @@ class PolicyValueNet():
                                                 padding="same",
                                                 activation=tf.nn.relu)
         self.evaluation_conv_flat = tf.reshape(
-                self.evaluation_conv, [-1, 2 * board_height * board_width])
+                self.evaluation_conv, [-1, 2 * 12 * 12])
         self.evaluation_fc1 = tf.layers.dense(inputs=self.evaluation_conv_flat,
                                               units=64, activation=tf.nn.relu)
         self.evaluation_fc2 = tf.layers.dense(inputs=self.evaluation_fc1,

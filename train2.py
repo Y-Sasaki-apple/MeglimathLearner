@@ -20,7 +20,7 @@ kl_targ = 0.02
 check_freq = 1
 
 init_model=None
-AZ.init(init_model,12,12,c_puct,n_playout)
+AZ.init(init_model,c_puct,n_playout)
 
 try:
     for i in range(play_batch_size):

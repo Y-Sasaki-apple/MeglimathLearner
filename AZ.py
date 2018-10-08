@@ -56,14 +56,13 @@ def policy_view(c_puct,n_playout,n_games=2):
 
 policy_value_net = None
 mcts_player = None
-def init(init_model,board_height,board_width,c_puct,n_playout):
+def init(init_model,c_puct,n_playout):
     global policy_value_net
     global mcts_player
     if init_model:
-        policy_value_net = PolicyValueNet(board_width,board_height,
-                                                model_file=init_model)
+        policy_value_net = PolicyValueNet(model_file=init_model)
     else:
-        policy_value_net = PolicyValueNet(board_width,board_height)
+        policy_value_net = PolicyValueNet()
 
     mcts_player = MCTSPlayer(policy_value_net,
                 c_puct=c_puct,

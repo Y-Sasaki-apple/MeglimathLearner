@@ -17,7 +17,7 @@ class Board(object):
             (12,7),(12,8),(12,9),(12,10),(12,11),(12,12)])
             #サイズ決める
         if turn is None:
-            turn=random.choice(range(60,120+1))
+            turn=random.choice(range(40,80+1))
         #サイズ決めてランダム初期化
         self.board.init_board(turn,start_player,size[0],size[1])
 
@@ -55,7 +55,7 @@ class Board(object):
         raw_state[4][(player_state == enemy_agents[0] )   # 敵エージェントの座標1
            | (player_state == enemy_agents[1])] = 1.0    # 敵エージェントの座標2
         raw_state[5] = self.board.get_board_state()/16.0 #得点
-        raw_state[6] = np.abs(self.board.get_board_state())/16.0 #得点の絶対値
+        raw_state[6][self.board.get_board_state()<=0]=1 #
         raw_state[7] = self.board.remain_turn/60.0
         raw_state[8] = np.ones(input_size)
         square_state = np.pad(raw_state,pad_size,"constant")

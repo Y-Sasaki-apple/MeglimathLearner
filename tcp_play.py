@@ -10,14 +10,13 @@ host = '127.0.0.1'
 port = 31400
 bufsize = 4096
 init_model='models/current_policy.model'
-board_width = 12
-board_height = 12
+# board_width = 12
+# board_height = 12
 c_puct = 0
 n_playout = 400
 if init_model:
     from AZNet import PolicyValueNet
-    policy_value_net = PolicyValueNet(board_width,board_height,
-                                            model_file=init_model)
+    policy_value_net = PolicyValueNet(model_file=init_model)
 else:
     from Util import random_network
     policy_value_net = random_network()
