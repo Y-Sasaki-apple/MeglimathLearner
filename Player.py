@@ -41,7 +41,7 @@ class MCTSPlayer:
         return policy_value_fn
 
     def get_action(self,board, temp=1e-3, return_prob=0):
-        move_probs = np.zeros(17*17)
+        move_probs = np.zeros(12*12*2*12*12*2)
         acts, probs = self.mcts.get_move_probs(board, temp)
         move_probs[list(acts)] = probs
         if self._is_selfplay:

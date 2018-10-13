@@ -29,7 +29,7 @@ class random_player():
     """
     def get_action(self,board,temp=None,return_prob=0):
         if return_prob==1:
-            prob = np.zeros(17*17)
+            prob = np.zeros(12*12*2*12*12*2)
             act=random.choice(board.availables)
             prob[act]=1
             return act,prob

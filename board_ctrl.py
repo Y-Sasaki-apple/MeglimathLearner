@@ -64,11 +64,6 @@ class Board(object):
     def do_move(self,move):
         self.board.do_move(move)
         """
-        moveの仕様
-        D=方向数。下を0として左回り。[0,7]
-        A=行動数。移動=0、除去=1
-        Nx=各エージェントの行動。A*8+D または 17(停滞) [0,17]
-        move=2エージェントの行動。N1*17+N2 [0,17*17)
         """
 
     def has_a_winner(self):

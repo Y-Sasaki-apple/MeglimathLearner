@@ -132,7 +132,7 @@ class mctsTest(unittest.TestCase):
         while(1):
             if node.is_leaf():
                 return node,state
-            action, node = 17*17-1,node._children[17*17-1]
+            action, node = 12*12*2*12*12*2-1,node._children[12*12*2*12*12*2-1]
             state.do_move(action)
 
     def test_state_eval(self):

@@ -65,7 +65,7 @@ class gameTest(unittest.TestCase):
             state = data[0]
             self.assertEqual(state.shape,(8,6,6))
             mcts_probs = data[1]
-            self.assertEqual(mcts_probs.shape,(17*17,))
+            self.assertEqual(mcts_probs.shape,(12*12*2*12*12*2,))
             winner = data[2]
             self.assertEqual(winner.shape,())
         winner_batch = [data[2] for data in batch]

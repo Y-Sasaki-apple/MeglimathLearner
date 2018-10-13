@@ -6,6 +6,8 @@ import numpy as np
 from collections import defaultdict, deque
 # from mcts_pure import MCTSPlayer as MCTS_Pure
 import AZ
+import concurrent.futures
+from multiprocessing import Process, freeze_support
 
 #パラメータの設定
 learn_rate = 2e-3
@@ -22,18 +24,30 @@ check_freq = 1
 init_model=None
 AZ.init(init_model,c_puct,n_playout)
 
-try:
-    for i in range(play_batch_size):
-        play_data = AZ.collect_selfplay_data(temp)
-        data_buffer.extend(play_data)
-        episode_len = len(play_data)
-        print("batch i:{}, episode_len:{}".format(i+1, episode_len))
-        if len(data_buffer) > batch_size:
-            loss, entropy = AZ.policy_update(data_buffer,batch_size,learn_rate,kl_targ)
-        if (i+1) % check_freq == 0:
-            print("current self-play batch: {}".format(i+1))
-            AZ.save_model('./models/current_policy.model')
-            AZ.policy_view(5,400)
-            # test_policy_and_save_best_policy()
-except KeyboardInterrupt:
-    print('\n\rquit')
+if __name__=="__main__":
+    try:
+        freeze_support()
+        for i in range(play_batch_size):
+            executor = concurrent.futures.ProcessPoolExecutor()
+            results = []
+
+            # executor.submit(a)    
+            for i in range(3):
+                results.append(executor.submit(AZ.collect_selfplay_data,temp))
+                print("開始"+str(i))
+            for r in results:
+                play_data = r.result()        
+                data_buffer.extend(play_data)
+            
+            # data_buffer.extend(play_data)
+            episode_len = len(play_data)
+            print("batch i:{}, episode_len:{}".format(i+1, episode_len))
+            if len(data_buffer) > batch_size:
+                loss, entropy = AZ.policy_update(data_buffer,batch_size,learn_rate,kl_targ)
+            if (i+1) % check_freq == 0:
+                print("current self-play batch: {}".format(i+1))
+                AZ.save_model('./models/current_policy.model')
+                AZ.policy_view(5,400)
+                # test_policy_and_save_best_policy()
+    except KeyboardInterrupt:
+        print('\n\rquit')

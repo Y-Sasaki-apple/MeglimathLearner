@@ -31,7 +31,7 @@ class PolicyValueNet():
         self.action_conv_flat = tf.reshape(
                 self.action_conv, [-1, 4 * 12 * 12])
         self.action_fc = tf.layers.dense(inputs=self.action_conv_flat,
-                                         units=17*17,
+                                         units=12*12*2*12*12*2,
                                          activation=tf.nn.log_softmax)
         self.evaluation_conv = tf.layers.conv2d(inputs=self.conv3, filters=2,
                                                 kernel_size=[1, 1],
@@ -48,7 +48,7 @@ class PolicyValueNet():
         self.labels = tf.placeholder(tf.float32, shape=[None, 1])
         self.value_loss = tf.losses.mean_squared_error(self.labels,
                                                        self.evaluation_fc2)
-        self.mcts_probs = tf.placeholder(tf.float32, shape=[None, 17*17]) ##17*17
+        self.mcts_probs = tf.placeholder(tf.float32, shape=[None, 12*12*2*12*12*2]) ##12*12*2*12*12*2
         self.policy_loss = tf.negative(tf.reduce_mean(
                 tf.reduce_sum(tf.multiply(self.mcts_probs, self.action_fc), 1)))
         l2_penalty_beta = 1e-4
