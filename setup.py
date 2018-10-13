@@ -7,7 +7,11 @@ import numpy as np
 
 setup(
     cmdclass = {'build_ext': build_ext},
-    ext_modules = [Extension("az_mcts", ['AZMCTS.pyx'], include_dirs=[np.get_include()]),
-                #    Extension("boards", ['board_ctrl.pyx'], include_dirs=[np.get_include()])
+    ext_modules = [ 
+                    Extension("board", ['board_ctrl.pyx'], include_dirs=[np.get_include()]),
+                    Extension("alphazero_net", ['AZNet.pyx'], include_dirs=[np.get_include()]),
+                    Extension("game", ['game_ctrl.pyx'], include_dirs=[np.get_include()]),
+                    Extension("pl", ['player.pyx'], include_dirs=[np.get_include()]),
+                    Extension("ut", ['util.pyx'], include_dirs=[np.get_include()])
                    ],
 )

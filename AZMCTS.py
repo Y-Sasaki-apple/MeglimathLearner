@@ -112,8 +112,8 @@ class MCTS:
 
 
 import unittest
-from Util import random_network
-from board_ctrl import Board
+from ut import random_network
+from board import Board
 
 class mctsTest(unittest.TestCase):
     def setUp(self):

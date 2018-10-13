@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import random
-from board_ctrl import Board
+from board import Board
 import numpy as np
 
 class random_network():

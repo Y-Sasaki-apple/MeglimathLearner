@@ -6,38 +6,17 @@ network to guide the tree search and evaluate the leaf nodes
 @author: Junxiao Song
 """
 
-from Player import MCTSPlayer
-from AZNet import PolicyValueNet
+#from Player import MCTSPlayer
+from pl import MCTSPlayer
+#from AZNet import PolicyValueNet
+from alphazero_net import PolicyValueNet
 import numpy as np
 import random
-from board_ctrl import Board
-import game_ctrl as Game
-# def policy_evaluate(n_games=10):
-#     """
-#     モンテカルロと戦って評価
-#     """
-#     current_mcts_player = MCTSPlayer(policy_value_net.policy_value_fn,
-#                                         c_puct=c_puct,
-#                                         n_playout=n_playout)
-#     pure_mcts_player = MCTS_Pure(c_puct=5,
-#                                     n_playout=pure_mcts_playout_num)
-#     win_cnt = defaultdict(int)
-#     for i in range(n_games):
-#         winner = game.start_play(current_mcts_player,
-#                                         pure_mcts_player,
-#                                         start_player=i % 2,
-#                                         is_shown=1)
-#         if i%2 == 1:
-#             if winner==1:
-#                 winner=2
-#             elif winner==2:
-#                 winner=1
-#         win_cnt[winner] += 1
-#     win_ratio = 1.0*(win_cnt[1] + 0.5*win_cnt[-1]) / n_games
-#     print("num_playouts:{}, win: {}, lose: {}, tie:{}".format(
-#             pure_mcts_playout_num,
-#             win_cnt[1], win_cnt[2], win_cnt[-1]))
-#     return win_ratio
+#from board_ctrl import Board
+from board import Board
+#import game_ctrl as Game
+import game as Game
+
 def policy_view(c_puct,n_playout,n_games=2):
     """
     自分と戦って閲覧

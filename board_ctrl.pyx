@@ -99,10 +99,10 @@ class Board(object):
         print("Player with 3,4,'X'", self.board.get_point(1))
         print()
         for x in range(width):
-            print("{0:8}".format(x), end='')
+            print "{0:8}".format(x),
         print('\r\n')
         for i in range(height):
-            print("{0:4d}".format(i), end='')
+            print "{0:4d}".format(i),
             for j in range(width):
                 printed=''
                 if self.board.get_current_state()[j,i] ==0 :
@@ -112,7 +112,7 @@ class Board(object):
                 printed += str(self.board.get_board_state()[j,i])
                 if self.board.get_player_state()[j,i] != 0:
                     printed += '('+str(self.board.get_player_state()[j,i])+')'
-                print(printed.center(8),end='')
+                print printed.center(8),
             print('\r\n\r\n')
 
 import unittest

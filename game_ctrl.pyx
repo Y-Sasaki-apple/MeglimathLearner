@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
-from board_ctrl import Board
+from board import Board
 
 def print_result(winner):
     if winner != -1:
@@ -53,8 +53,8 @@ def start_self_play(player, is_shown=0, temp=1e-3):
             return winner, zip(states, mcts_probs, winners_z)
 
 import unittest
-from Util import random_player,random_network
-from Player import MCTSPlayer
+from ut import random_network,random_player
+from pl import MCTSPlayer
 
 class gameTest(unittest.TestCase):
     def test_self_play(self):
@@ -81,7 +81,7 @@ class gameTest(unittest.TestCase):
         self.player_play()
 
     def player_play(self):
-        from AZNet import PolicyValueNet
+        from alphazero_net import PolicyValueNet
         policy_value_net = PolicyValueNet(model_file='models/current_policy.model')
         pl1=MCTSPlayer(policy_value_net,1,400,0)
         pl2=MCTSPlayer(random_network(),1,400,0)
