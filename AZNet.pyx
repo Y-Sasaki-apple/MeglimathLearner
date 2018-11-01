@@ -30,8 +30,11 @@ class PolicyValueNet():
                                             activation=tf.nn.relu)
         self.action_conv_flat = tf.reshape(
                 self.action_conv, [-1, 4 * 12 * 12])
-        self.action_fc = tf.layers.dense(inputs=self.action_conv_flat,
-                                         units=12*12*2*12*12*2,
+        self.action_fc1 = tf.layers.dense(inputs=self.action_conv_flat,
+                                         units=12*12*2,
+                                         activation=tf.nn.log_softmax)
+        self.action_fc2 = tf.layers.dense(inputs=self.action_conv_flat,
+                                         units=12*12*2,
                                          activation=tf.nn.log_softmax)
         self.evaluation_conv = tf.layers.conv2d(inputs=self.conv3, filters=2,
                                                 kernel_size=[1, 1],
@@ -48,14 +51,17 @@ class PolicyValueNet():
         self.labels = tf.placeholder(tf.float32, shape=[None, 1])
         self.value_loss = tf.losses.mean_squared_error(self.labels,
                                                        self.evaluation_fc2)
-        self.mcts_probs = tf.placeholder(tf.float32, shape=[None, 12*12*2*12*12*2]) ##12*12*2*12*12*2
-        self.policy_loss = tf.negative(tf.reduce_mean(
-                tf.reduce_sum(tf.multiply(self.mcts_probs, self.action_fc), 1)))
+        self.mcts_probs1 = tf.placeholder(tf.float32, shape=[None, 12*12*2]) ##12*12*2
+        self.policy_loss1 = tf.negative(tf.reduce_mean(
+                tf.reduce_sum(tf.multiply(self.mcts_probs1, self.action_fc1), 1)))
+        self.mcts_probs2 = tf.placeholder(tf.float32, shape=[None, 12*12*2]) ##12*12*2
+        self.policy_loss2 = tf.negative(tf.reduce_mean(
+                tf.reduce_sum(tf.multiply(self.mcts_probs2, self.action_fc2), 1)))
         l2_penalty_beta = 1e-4
         vars = tf.trainable_variables()
         l2_penalty = l2_penalty_beta * tf.add_n(
             [tf.nn.l2_loss(v) for v in vars if 'bias' not in v.name.lower()])
-        self.loss = self.value_loss + self.policy_loss + l2_penalty
+        self.loss = self.value_loss + self.policy_loss1+ self.policy_loss2 + l2_penalty
 
         self.learning_rate = tf.placeholder(tf.float32)
         self.optimizer = tf.train.AdamOptimizer(
@@ -64,7 +70,9 @@ class PolicyValueNet():
         self.session = tf.Session()
 
         self.entropy = tf.negative(tf.reduce_mean(
-                tf.reduce_sum(tf.exp(self.action_fc) * self.action_fc, 1)))
+                tf.reduce_sum(tf.exp(self.action_fc1) * self.action_fc1, 1)))
+                + tf.negative(tf.reduce_mean(
+                tf.reduce_sum(tf.exp(self.action_fc2) * self.action_fc2, 1)))
 
         init = tf.global_variables_initializer()
         self.session.run(init)
@@ -78,25 +86,23 @@ class PolicyValueNet():
         input: a batch of states
         output: a batch of action probabilities and state values
         """
-        log_act_probs, value = self.session.run(
-                [self.action_fc, self.evaluation_fc2],
+        log_act_probs1,log_act_probs2, value = self.session.run(
+                [self.action_fc1,self.action_fc2, self.evaluation_fc2],
                 feed_dict={self.input_states: state_batch}
                 )
-        act_probs = np.exp(log_act_probs)
-        return act_probs, value
+        act_probs1 = np.exp(log_act_probs1)
+        act_probs2 = np.exp(log_act_probs2)
+        return (act_probs1,act_probs2), value
 
     def train_step(self, state_batch, mcts_probs, winner_batch, lr):
         """perform a training step"""
         winner_batch = np.reshape(winner_batch, (-1, 1))
-        """ kokuta - 2018/06/29 
-        self.session.run() で不具合発生 tf.placestructure の self.mcts_probs と mcts_probs の要素のサイズが異なります。
-        self.mcts_probs の 要素のサイズ : (289,) = (17*17,)
-        mcts_probs の 要素のサイズ      : (42,) board の available に起因? 要検討
-        """
+        mcts_probs1,mcts_probs2=mcts_probs
         loss, entropy, _ = self.session.run(
                 [self.loss, self.entropy, self.optimizer],
                 feed_dict={self.input_states: state_batch,
-                           self.mcts_probs: mcts_probs,
+                           self.mcts_probs1: mcts_probs1,
+                           self.mcts_probs2: mcts_probs2
                            self.labels: winner_batch,
                            self.learning_rate: lr})
         return loss, entropy

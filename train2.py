@@ -14,8 +14,8 @@ pyximport.install()
 play_batch_size = 1
 play_parallel_size = 3
 check_freq = 1
-#init_model = None
-init_model='models/current_policy.model'
+init_model = None
+#init_model='models/current_policy.model'
 
 #パラメータの設定
 learn_rate = 2e-3
@@ -44,7 +44,7 @@ if __name__=="__main__":
                 play_data = r.result()        
                 data_buffer.extend(play_data)
             
-            # data_buffer.extend(play_data)
+            data_buffer.extend(play_data)
             episode_len = len(play_data)
             print("batch i:{}, episode_len:{}".format(i+1, episode_len))
             if len(data_buffer) > batch_size:
